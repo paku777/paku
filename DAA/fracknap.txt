@@ -1,0 +1,52 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct Item{
+    int Weight;
+    int value;
+};
+bool compare(Item a, Item b){
+    double r1=(double)a.value/a.Weight;
+    double r2=(double)b.value/b.Weight;
+    return r1>r2;
+}
+double fractionalknapsack(int W, vector<Item>& items){
+    //sorting
+    sort(items.begin(),items.end(),compare);
+
+    int currentweight=0;
+    double finalvalue=0.0;
+
+    for(const auto& item:items){
+        if(item.Weight+currentweight<=W){
+            currentweight+=item.Weight;
+            finalvalue+=item.value;
+        }
+        else{
+            int remain=W-currentweight;
+            finalvalue+=item.value*((double)remain/item.Weight);
+            break;
+        }
+    }
+    return finalvalue;
+}
+
+int main(){
+    int W;
+    int n;
+    cout<<"Enter maximum capacity:";
+    cin>>W;
+    cout<<"Total no of Items:";
+    cin>>n;
+    vector<Item>items(n);
+
+    for(int i=0;i<n;i++){
+        cout<<"Enter Weight and Value for item "<<i+1<<" respectively:";
+        cin>>items[i].Weight>>items[i].value;
+    }
+
+    double maxvalue=fractionalknapsack(W,items);
+    cout<<"Maximum Value knapsack can hold is:"<<maxvalue;
+}

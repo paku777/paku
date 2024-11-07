@@ -1,0 +1,46 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int capacity, items;
+
+    // Get user input for knapsack capacity and number of items
+    cout << "Enter the capacity of the knapsack: ";
+    cin >> capacity;
+    
+    cout << "Enter the number of items: ";
+    cin >> items;
+
+    int price[items + 1];
+    int wt[items + 1];
+
+    // Taking input for the prices and weights of each item
+    price[0] = 0;  // Initialize first index to 0 for convenience
+    wt[0] = 0;
+
+    for (int i = 1; i <= items; i++) {
+        cout << "Enter value and weight for item " << i << " (value weight): ";
+        cin >> price[i] >> wt[i];
+    }
+
+    int dp[items + 1][capacity + 1];
+
+    // Building the DP table
+    for (int i = 0; i <= items; i++) {
+        for (int j = 0; j <= capacity; j++) {
+            if (i == 0 || j == 0) {
+                // There's nothing to add to Knapsack
+                dp[i][j] = 0;
+            } else if (wt[i] <= j) {
+                // Choose previously maximum or value of current item + value of remaining weight
+                dp[i][j] = max(price[i] + dp[i - 1][j - wt[i]], dp[i - 1][j]);
+            } else {
+                // Add previously added item to knapsack
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+
+    cout << "Maximum Profit Earned: " << dp[items][capacity] << "\n";
+    return 0;
+}
