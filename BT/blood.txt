@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BloodDonationCamp {
+    // Define a structure to store blood stock information
+    struct BloodStock {
+        string bloodType;
+        uint256 quantity;
+    }
+
+    // Mapping to store blood stocks for different locations
+    mapping(string => BloodStock[]) private locationBloodStock;
+
+    // Function to add blood to a specific location
+    function addBloodStock(string memory _location, string memory _bloodType, uint256 _quantity) public {
+        BloodStock memory newStock = BloodStock({
+            bloodType: _bloodType,
+            quantity: _quantity
+        });
+        locationBloodStock[_location].push(newStock);
+    }
+
+    // Function to update blood stock for a specific location
+    function updateBloodStock(string memory _location, string memory _bloodType, uint256 _quantity) public {
+        BloodStock[] storage stocks = locationBloodStock[_location];
+        for (uint256 i = 0; i < stocks.length; i++) {
+            if (keccak256(abi.encodePacked(stocks[i].bloodType)) == keccak256(abi.encodePacked(_bloodType))) {
+                stocks[i].quantity = _quantity;
+                return;
+            }
+        }
+    }
+
+    // Function to get the blood stock for a specific location
+    function getBloodStockByLocation(string memory _location) public view returns (BloodStock[] memory) {
+        return locationBloodStock[_location];
+    }
+}
